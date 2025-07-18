@@ -1,25 +1,24 @@
-/* Import Pormtt font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Prompt&display=swap');
+/* Import Sarabun font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
 
 :root {
-    /* Define a beautiful color palette */
-    --primary-color: #3f51b5; /* Indigo blue */
-    --secondary-color: #ff9800; /* Orange */
-    --accent-color: #4CAF50; /* Green for success (มา) */
-    --danger-color: #f44336; /* Red for danger/absent (ขาด) */
-    --info-color: #2196f3; /* Blue for info (ลา) */
-    --warning-color: #ffc107; /* Amber for warning (มาสาย) */
-    --background-color: #f0f2f5; /* Light grey background */
+    /* Define a beautiful and modern color palette */
+    --primary-color: #19a641; /* A vibrant blue */
+    --secondary-color: #fd7e14; /* A complementary orange */
+    --accent-color: #28a745; /* Green for success (มา) */
+    --danger-color: #dc3545; /* Red for danger/absent (ขาด) */
+    --info-color: #17a2b8; /* Teal for info (ลา) */
+    --warning-color: #ffc107; /* Yellow for warning (มาสาย) */
+    --background-color: #e9ecef; /* Light grey background */
     --card-background: #ffffff; /* White background for content cards */
-    --text-color: #333333;
+    --text-color: #343a40; /* Dark grey for primary text */
     --light-text-color: #ffffff;
     --border-radius: 8px;
-    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08); /* Soft shadow */
 }
 
 body {
-    font-family: 'Prompt', sans-serif;
-
+    font-family: 'Sarabun', sans-serif;
     background-color: var(--background-color);
     margin: 0;
     padding: 0;
@@ -28,15 +27,14 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
 }
 
 .container {
     width: 100%;
-    /* ปรับ max-width กลับเป็น 900px สำหรับหน้าจอคอมพิวเตอร์ เพื่อให้ตารางมีพื้นที่พอ */
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 15px;
+    max-width: 960px; /* Slightly wider for desktop */
+    margin: 25px auto; /* Increased margin */
+    padding: 25px; /* Increased padding */
     background-color: var(--card-background);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
@@ -47,89 +45,72 @@ body {
 .header {
     background-color: var(--primary-color);
     color: var(--light-text-color);
-    padding: 20px 15px;
+    padding: 25px 25px; /* Adjusted padding */
     border-radius: var(--border-radius) var(--border-radius) 0 0;
-    margin: -15px -15px 20px -15px;
+    margin: -25px -25px 30px -25px; /* Adjusted margin to fit new padding */
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1); /* Lighter shadow */
 }
 
 .header h2 {
     margin: 0;
-    font-size: 1.8em;
+    font-size: 2em; /* Slightly larger font */
+    font-weight: 700; /* Bold */
 }
 
 .controls-top,
 .controls-bottom {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 15px; /* Increased gap */
+    margin-bottom: 25px; /* Increased margin */
     justify-content: center;
     align-items: center;
 }
 
 #searchInput {
     flex-grow: 1;
-    padding: 12px 15px;
-    border: 1px solid #ccc;
-    border-radius: var(--border-radius);
-    font-size: 1em;
-    font-family: 'Pormtt', sans-serif;
+    padding: 14px 18px; /* Increased padding */
+    border: 1px solid #ced4da; /* Lighter border color */
+    border-radius: 50px; /* Pill-shaped */
+    font-size: 1.1em;
+    font-family: 'Sarabun', sans-serif; /* Correct font reference */
     outline: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    max-width: 300px;
+    max-width: 350px; /* Slightly wider search input */
 }
 
 #searchInput:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Bootstrap-like focus glow */
 }
 
 .button {
     display: inline-block;
-    padding: 12px 20px;
-    border-radius: var(--border-radius);
+    padding: 12px 25px; /* Increased padding */
+    border-radius: 50px; /* Pill-shaped */
     text-decoration: none;
     font-size: 1em;
-    font-weight: bold;
+    font-weight: 700; /* Bold */
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     white-space: nowrap;
     border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Subtle shadow */
 }
 
-.back-button {
-    /* Adjusted for placement above search bar */
-    position: relative;
-    margin-bottom: 15px; /* Space below the button */
-    background-color: #007bff;
-    color: white;
-    padding: 15px 25px;
-    border-radius: var(--border-radius);
-    text-decoration: none;
-    font-size: 1.1em;
-    font-weight: bold;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    z-index: 1000;
-    min-width: 150px;
-    max-width: 200px;
-    text-align: center;
-    display: block; /* Make it a block element to take its own line */
-    margin-left: auto; /* Center horizontally */
-    margin-right: auto; /* Center horizontally */
+/* Specific button styles */
+.button-primary-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
 }
 
-.back-button:hover {
-    background-color: #0056b3;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
-}
-
-.back-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+.button-primary-outline:hover {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 123, 255, 0.2);
 }
 
 .excel-button {
@@ -138,50 +119,60 @@ body {
 }
 
 .excel-button:hover {
-    background-color: #388e3c;
+    background-color: #218838; /* Darker green */
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.25rem 0.5rem rgba(40, 167, 69, 0.2);
 }
 
 .google-sheet-button {
-    background-color: #1a73e8;
+    background-color: var(--primary-color); /* Using primary color for main action */
     color: var(--light-text-color);
 }
 
 .google-sheet-button:hover {
-    background-color: #155bbd;
+    background-color: #12b44a; /* Darker blue */
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 123, 255, 0.2);
 }
 
 /* Table Styling */
 .table-responsive {
     overflow-x: auto;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     border-radius: var(--border-radius);
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--box-shadow);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 300px;
+    min-width: auto;
     background-color: var(--card-background);
 }
 
 table thead th {
     background-color: var(--primary-color);
     color: var(--light-text-color);
-    padding: 12px 10px;
+    padding: 15px 12px;
     text-align: left;
-    font-size: 0.95em;
+    font-size: 1em;
     position: sticky;
     top: 0;
     z-index: 2;
+    border-bottom: 3px solid #0056b3;
 }
 
+table thead tr:first-child th:first-child {
+    border-top-left-radius: var(--border-radius);
+}
+
+table thead tr:first-child th:nth-child(2) { /* คอลัมน์ที่สองคือคอลัมน์สุดท้าย */
+    border-top-right-radius: var(--border-radius);
+}
+
+
 table tbody tr {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #dee2e6;
     transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -190,90 +181,91 @@ table tbody tr:last-child {
 }
 
 table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f8f9fa;
 }
 
 table tbody tr:hover {
-    background-color: #e0e0e0;
+    background-color: #e2e6ea;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
 table td {
-    padding: 10px;
-    vertical-align: middle;
-    font-size: 0.9em;
+    padding: 12px;
+    vertical-align: top; /* เปลี่ยนเป็น top เพื่อให้ชื่ออยู่ด้านบน */
+    font-size: 0.95em;
 }
 
 /* Specific column widths for better layout */
 table th:nth-child(1),
 table td:nth-child(1) {
-    width: 50px; /* Index column */
+    width: 70px; /* Index column */
     text-align: center;
 }
 
 table th:nth-child(2),
 table td:nth-child(2) {
-    /* ปรับ min-width ของคอลัมน์ชื่อให้เหมาะสมขึ้นสำหรับจอใหญ่ */
-    min-width: 100px; 
-}
-
-table th:nth-child(3),
-table td:nth-child(3) {
-    width: 120px; /* Status column: รักษากว้างเท่าเดิม หรือปรับลด/เพิ่มตามขนาดปุ่ม */
-    text-align: center;
+    min-width: 250px; /* เพิ่มความกว้างขั้นต่ำสำหรับคอลัมน์ชื่อ + สถานะ */
+    text-align: left; /* จัดชิดซ้ายสำหรับชื่อและปุ่มสถานะ */
 }
 
 /* Status Buttons Styling */
 .status-buttons {
     display: flex;
-    flex-direction: column; /* เรียงปุ่มเป็นแนวตั้ง */
-    gap: 5px; /* ระยะห่างระหว่างปุ่ม */
-    align-items: center; /* จัดกึ่งกลางปุ่มในแนวตั้ง */
+    flex-wrap: wrap;
+    gap: 75px; /* Increased gap between buttons for more spacing */
+    justify-content: flex-start; /* จัดปุ่มให้เริ่มจากซ้าย */
+    align-items: center;
+    margin-top: 8px; /* Adjusted margin between name and buttons */
 }
 
 .status-option {
-    padding: 8px 12px;
-    border-radius: 6px;
+    display: flex; /* Use flexbox to center content vertically and horizontally */
+    justify-content: center;
+    align-items: center;
+    width: 40px; /* Fixed width for circular shape */
+    height: 40px; /* Fixed height for circular shape */
+    border-radius: 50%; /* Make it circular */
     cursor: pointer;
-    background-color: #e0e0e0; /* สีพื้นหลังเริ่มต้นของปุ่ม */
+    background-color: #f0f2f5;
     color: var(--text-color);
-    font-weight: bold;
-    transition: background-color 0.2s ease, transform 0.1s ease, color 0.2s ease;
-    width: 100px; /* กำหนดความกว้างคงที่เพื่อให้ทุกปุ่มเท่ากันและเรียงสวยงาม */
-    text-align: center;
-    border: 1px solid #ccc;
+    font-weight: 600;
+    font-size: 0.85em; /* Smaller font size for smaller buttons */
+    transition: background-color 0.2s ease, transform 0.1s ease, color 0.2s ease, box-shadow 0.2s ease;
+    text-align: center; /* Ensures text is centered horizontally */
+    border: 1px solid #dcdfe4;
+    user-select: none;
+    box-sizing: border-box; /* Include padding and border in the total width/height */
 }
 
 .status-option:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.08);
+    background-color: #e9ecef;
 }
 
 /* Active status styling */
 .status-option.active {
-    border-color: #333; /* ขอบเข้มขึ้นเมื่อ active */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    border-color: transparent;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
 
 /* Colors for active status options */
 .status-option.active.status-มา {
     background-color: var(--accent-color);
     color: var(--light-text-color);
-    border-color: #388e3c;
 }
 .status-option.active.status-ขาด {
     background-color: var(--danger-color);
     color: var(--light-text-color);
-    border-color: #d32f2f;
 }
 .status-option.active.status-ลา {
     background-color: var(--info-color);
     color: var(--light-text-color);
-    border-color: #1976d2;
 }
 .status-option.active.status-มาสาย {
     background-color: var(--warning-color);
-    color: var(--light-text-color); /* ใช้ text-color เพราะพื้นหลังสีอ่อน */
-    border-color: #ffa000;
+    color: var(--text-color);
 }
 
 /* --- Mobile Specific Styles --- */
@@ -282,92 +274,82 @@ table td:nth-child(3) {
         margin: 0;
         border-radius: 0;
         box-shadow: none;
-        padding: 10px;
+        padding: 15px;
     }
 
     .header {
-        padding: 15px 10px;
-        margin: -10px -10px 15px -10px;
+        padding: 20px 15px;
+        margin: -15px -15px 20px -15px;
         border-radius: 0;
     }
 
     .header h2 {
-        font-size: 1.5em;
+        font-size: 1.8em;
     }
 
     .controls-top,
     .controls-bottom {
         flex-direction: column;
         align-items: stretch;
-        margin-bottom: 15px;
+        gap: 10px;
+        margin-bottom: 20px;
     }
 
     #searchInput {
         max-width: 100%;
         margin-bottom: 5px;
+        font-size: 1em;
+        padding: 12px 15px;
     }
 
     .button {
         width: 100%;
         padding: 14px 15px;
-        font-size: 1.1em;
-        margin-top: 5px;
+        font-size: 1.05em;
+        margin-top: 0;
     }
     
     table th,
     table td {
-        padding: 8px;
-        font-size: 0.8em;
+        padding: 10px;
+        font-size: 0.85em;
     }
 
-    table th:nth-child(1), table td:nth-child(1) { width: 35px; }
-    table th:nth-child(2), table td:nth-child(2) { min-width: 80px; } 
-    table th:nth-child(3), table td:nth-child(3) { width: 100px; } 
+    table th:nth-child(1), table td:nth-child(1) { width: 60px; }
+    table th:nth-child(2), table td:nth-child(2) { min-width: 180px; text-align: left; } /* ปรับ min-width และจัดชิดซ้าย */
 
     .status-buttons {
-        gap: 3px;
+        gap: 25px; /* Adjusted gap for mobile for more spacing */
+        justify-content: flex-start; /* จัดปุ่มให้เริ่มจากซ้ายในมือถือ */
+        margin-top: 5px; /* Adjusted margin for mobile */
     }
 
     .status-option {
-        padding: 6px 8px;
-        font-size: 0.8em;
-        width: 80px; 
+        width: 35px; /* Slightly smaller for mobile */
+        height: 35px; /* Slightly smaller for mobile */
+        font-size: 0.75em; /* Adjust font size */
     }
 
-    /* MODIFICATION START: Mobile specific styles for the back-button */
-    .back-button {
-        padding: 10px 15px; /* Smaller padding */
-        font-size: 0.9em;    /* Smaller font size */
-        min-width: unset;    /* Remove min-width */
-        max-width: 100%;     /* Allow to fill container */
-        margin-bottom: 10px; /* Slightly less margin below */
-        border-radius: var(--border-radius); /* Use variable for consistency */
-        /* Removed fixed positioning related styles (bottom, right) as it's now in the flow */
+    /* Back button on mobile */
+    .button-primary-outline {
+        order: -1;
+        margin-bottom: 10px;
     }
-    /* MODIFICATION END */
 }
 
 @media screen and (max-width: 480px) {
     .header h2 {
-        font-size: 1.3em;
+        font-size: 1.5em;
     }
     .button {
-        font-size: 1em;
+        font-size: 0.95em;
         padding: 12px 10px;
     }
     .status-option {
-        font-size: 0.75em;
-        padding: 5px 6px;
-        width: 70px; 
+        width: 30px; /* Even smaller for very small screens */
+        height: 30px;
+        font-size: 0.7em;
     }
-
-    /* MODIFICATION START: Even smaller for very small screens */
-    .back-button {
-        padding: 8px 12px; /* Even smaller padding */
-        font-size: 0.8em;    /* Even smaller font size */
-        margin-bottom: 8px;  /* Adjust margin */
-    }
-    /* MODIFICATION END */
 }
 
 /* Loading Overlay Styles */
@@ -377,23 +359,23 @@ table td:nth-child(3) {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-    display: flex; /* Use flexbox for centering content */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    z-index: 9999; /* Ensure it's on top of everything */
-    display: none; /* Hidden by default */
-    flex-direction: column; /* Stack spinner and text vertically */
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
 }
 
 .loading-content {
-    background-color: white;
-    padding: 30px 40px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background-color: var(--card-background);
+    padding: 35px 50px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     color: var(--text-color);
-    font-size: 1.2em;
-    font-weight: bold;
+    font-size: 1.3em;
+    font-weight: 700;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -401,13 +383,13 @@ table td:nth-child(3) {
 
 /* Spinner Animation */
 .spinner {
-    border: 5px solid #f3f3f3; /* Light grey border */
-    border-top: 5px solid var(--primary-color); /* Blue spinner part */
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid var(--primary-color);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite; /* Spin animation */
-    margin-bottom: 15px; /* Space between spinner and text */
+    width: 45px;
+    height: 45px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
 }
 
 @keyframes spin {
