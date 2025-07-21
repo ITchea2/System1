@@ -29,126 +29,19 @@ h1 {
   font-weight: 700; /* Bolder heading */
 }
 
-.controls {
-  margin-bottom: 35px; /* Increased margin */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 18px; /* Increased gap */
-  flex-wrap: wrap;
-}
-
-.controls label,
-.controls select,
-.controls input[type="date"] {
-  font-size: 1.1em;
-  padding: 10px 15px; /* Slightly more padding */
-  border-radius: 8px; /* More rounded inputs */
-  border: 1px solid #c0d3eb; /* Softer border color */
-  background-color: #fcfdff; /* Off-white background */
-  font-family: 'Prompt', sans-serif;
-  cursor: pointer;
-  transition: all 0.3s ease; /* Smooth transitions */
-}
-
-.controls select:hover,
-.controls input[type="date"]:hover {
-  border-color: #a0c0e0; /* Hover effect for borders */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Subtle shadow on hover */
-}
-
-.loading,
-.error-message,
-.no-data {
-  margin-top: 25px; /* Increased margin */
-  font-size: 1.15em; /* Slightly larger font */
-  color: #555;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.error-message {
-  color: #d9534f; /* More distinct red for errors */
-  background-color: #ffebeb;
-}
-
-.no-data {
-  color: #777;
-  font-style: italic;
-  background-color: #f0f4f7;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 25px; /* Increased margin */
-  border-radius: 10px; /* Apply border-radius to the table */
-  overflow: hidden; /* Ensures border-radius is visible */
-}
-
-th,
-td {
-  border: 1px solid #e0eaf3; /* Lighter border for table cells */
-  padding: 15px; /* More padding in cells */
-  text-align: center;
-  font-size: 1.05em; /* Slightly larger text in table */
-}
-
-th {
-  background-color: #e0f2f7;
-  color: #2c3e50;
-  font-weight: 600; /* Slightly less bold */
-  text-transform: uppercase; /* Uppercase for headers */
-  letter-spacing: 0.5px; /* Spacing for letters */
-}
-
-tr:nth-child(even) {
-  background-color: #f8fcfd; /* Lighter alternate row background */
-}
-
-tr:hover {
-  background-color: #eef7fc; /* More subtle hover effect */
-  cursor: pointer;
-}
-
-/* Styles for Charts */
-.chart-container {
-  max-width: 900px;
-  width: 100%;
-  background: #fff;
-  border-radius: 12px; /* Consistent rounded corners */
-  padding: 30px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08); /* Consistent shadow */
-  margin-top: 30px; /* Increased margin */
-  text-align: center;
-}
-
-#attendanceChart,
-#doughnutChart,
-#lineChart {
-  width: 100% !important;
-  height: 400px; /* Keep consistent height */
-  max-height: 500px;
-  margin: 0 auto; /* Center the canvas within its container */
-  display: block; /* Ensures margin auto works */
-}
-
 .btn-history {
-  position: fixed; /* ทำให้ปุ่มอยู่กับที่เมื่อ scroll */
-    bottom: 30px; /* ห่างจากขอบล่าง 30px */
-    right: 30px; /* ห่างจากขอบขวา 30px */
-    background-color: #007bff; /* สีพื้นหลังของปุ่ม */
-    color: white; /* สีข้อความ */
-    padding: 15px 25px; /* ขนาด padding */
-    border-radius: 50px; /* ทำให้ปุ่มเป็นวงกลมรี */
+    display: inline-block;
+    background-color: #007BFF; /* Primary blue color */
+    color: #ffffff; /* White text */
+    padding: 10px 20px;
+    border-radius: 25px; /* ทำให้ปุ่มเป็นวงกลมรี */
     text-decoration: none; /* ไม่มีขีดเส้นใต้ */
     font-size: 1.1em; /* ขนาดตัวอักษร */
     font-weight: bold; /* ตัวหนา */
     box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); /* เงา */
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* transition effect */
     z-index: 1000; /* ให้ปุ่มอยู่ด้านบนสุด */
+    margin-bottom: 25px; /* Added margin to separate from controls */
 }
 
 .btn-history:hover {
@@ -162,33 +55,180 @@ tr:hover {
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2); /* เงาลดลงเมื่อคลิก */
 }
 
-    table th:nth-child(1), table td:nth-child(1) { width: 35px; }
-    /* ปรับ min-width สำหรับมือถือให้มีความยืดหยุ่นมากขึ้นเล็กน้อย */
-    table th:nth-child(2), table td:nth-child(2) { min-width: 80px; } 
-    table th:nth-child(3), table td:nth-child(3) { width: 100px; } 
+.controls {
+  margin-bottom: 35px; /* Increased margin */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px; /* Increased gap */
+  flex-wrap: wrap; /* Allow controls to wrap on smaller screens */
+}
 
-    .status-buttons {
-        gap: 3px;
+.controls label {
+  font-weight: 600;
+  color: #555;
+  font-size: 1.05em;
+}
+
+.controls input[type="date"],
+.controls select {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px; /* Rounded input fields */
+  font-size: 1em;
+  font-family: 'Prompt', sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.controls input[type="date"]:focus,
+.controls select:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 15px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.loading-message {
+    text-align: center;
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* New Summary Cards Section */
+.summary-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center cards */
+    gap: 20px;
+    margin-bottom: 30px; /* Space below summary cards */
+}
+
+.summary-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    padding: 25px 30px;
+    text-align: center;
+    flex: 1; /* Allow cards to grow */
+    min-width: 200px; /* Minimum width before wrapping */
+    max-width: 280px; /* Max width to keep them manageable */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.summary-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: #555;
+}
+
+.summary-card .count {
+    font-size: 2.8em;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+/* Specific colors for summary cards (matching Chart.js colors or general theme) */
+.summary-card.status-present .count { color: #4CAF50; } /* Green */
+.summary-card.status-absent .count { color: #F44336; } /* Red */
+.summary-card.status-leave .count { color: #FFEB3B; } /* Yellow/Orange */
+.summary-card.status-late .count { color: #2196F3; } /* Blue */
+
+
+/* Chart Section Styling */
+.chart-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.chart-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    flex: 1;
+    min-width: 300px; /* Min width for charts */
+    max-width: 450px; /* Max width for charts */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    .controls {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .controls input[type="date"],
+    .controls select {
+        width: 100%; /* Full width for inputs on small screens */
+        box-sizing: border-box;
     }
 
-    .status-option {
-        padding: 6px 8px;
-        font-size: 0.8em;
-        width: 80px; 
+    .summary-card {
+        min-width: unset; /* Reset min-width */
+        width: calc(50% - 15px); /* Two cards per row with gap */
+        padding: 20px 15px;
     }
-
-
-@media screen and (max-width: 480px) {
-    .header h2 {
+    .summary-card h3 {
         font-size: 1.3em;
     }
-    .button {
-        font-size: 1em;
-        padding: 12px 10px;
+    .summary-card .count {
+        font-size: 2.2em;
     }
-    .status-option {
-        font-size: 0.75em;
-        padding: 5px 6px;
-        width: 70px; 
+    .chart-card {
+        min-width: 95%; /* Allow charts to take more width on small screens */
+        max-width: 100%;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    h1 {
+        font-size: 1.5em;
+    }
+    .summary-cards {
+        flex-direction: column; /* Stack cards vertically on very small screens */
+        align-items: center;
+    }
+    .summary-card {
+        width: 90%; /* Take almost full width */
+        max-width: 300px; /* But not too wide */
+        padding: 18px 15px;
+    }
+    .summary-card h3 {
+        font-size: 1.2em;
+    }
+    .summary-card .count {
+        font-size: 2em;
     }
 }

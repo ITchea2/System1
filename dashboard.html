@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>สรุปข้อมูลนักเรียนรายวันแยกตามชั้น</title>
+  <title>สรุปข้อมูลนักเรียนรายวัน</title>
   <link rel="stylesheet" href="dashboard.css">
-  <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 </head>
 <body>
   <div class="container">
-    <h1>📝 สรุปข้อมูลนักเรียนรายวันแยกตามชั้น</h1>
-     <a href="index.html" class="btn-history">📊 กลับหน้าหลัก</a>
+    <h1>📊 สรุปข้อมูลการเช็คชื่อนักเรียน</h1>
+    <a href="index.html" class="btn-history">❮ กลับหน้าหลัก</a>
 
     <div class="controls">
       <label for="summaryDate">เลือกวันที่:</label>
@@ -24,9 +24,10 @@
         <option value="ม.1/2">ม.1/2</option>
         <option value="ม.2/1">ม.2/1</option>
         <option value="ม.2/2">ม.2/2</option>
-        <option value="ม.2/3">ม.2/2</option>
+        <option value="ม.2/3">ม.2/3</option>
         <option value="ม.3/1">ม.3/1</option>
         <option value="ม.3/2">ม.3/2</option>
+        <option value="ม.3/3">ม.3/3</option>
         <option value="ม.4/1">ม.4/1</option>
         <option value="ม.4/2">ม.4/2</option>
         <option value="ม.5/1">ม.5/1</option>
@@ -37,305 +38,289 @@
       </select>
     </div>
 
-    <div class="loading" id="loadingMessage" style="display: none;">กำลังโหลดข้อมูล...</div>
-    <div class="error-message" id="errorMessage" style="display: none;"></div>
-    <div class="no-data" id="noDataMessage" style="display: none;">ไม่มีข้อมูลสำหรับวันที่และชั้นเรียนที่เลือก</div>
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+    <div id="loadingMessage" class="loading-message">กำลังโหลดข้อมูล...</div>
 
-    <table id="summaryTable" style="display: none;">
-      <thead>
-        <tr>
-          <th>ชั้นเรียน</th>
-          <th>จำนวนนักเรียนทั้งหมด</th>
-          <th>มา</th>
-          <th>ขาด</th>
-          <th>ลา</th>
-          <th>มาสาย</th>
-        </tr>
-      </thead>
-      <tbody>
-        </tbody>
-    </table>
+    <!-- New Summary Cards Section -->
+    <div class="summary-cards">
+        <div class="summary-card status-present">
+            <h3>มา</h3>
+            <p id="countPresent" class="count">0</p>
+        </div>
+        <div class="summary-card status-absent">
+            <h3>ขาด</h3>
+            <p id="countAbsent" class="count">0</p>
+        </div>
+        <div class="summary-card status-leave">
+            <h3>ลา</h3>
+            <p id="countLeave" class="count">0</p>
+        </div>
+        <div class="summary-card status-late">
+            <h3>มาสาย</h3>
+            <p id="countLate" class="count">0</p>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="chart-section">
+        <div class="chart-card">
+            <canvas id="doughnutChartCanvas"></canvas>
+        </div>
+        <div class="chart-card">
+            <canvas id="lineChartCanvas"></canvas>
+        </div>
+    </div>
+
   </div>
 
-  <div class="chart-container" id="attendanceChartContainer" style="display: none;">
-    <h2>📊 สรุปการเช็คชื่อรายวัน (กราฟ)</h2>
-    <canvas id="attendanceChart"></canvas>
-  </div>
-  <div class="chart-container" id="doughnutChartContainer" style="display: none;">
-    <h2>📊 สรุปสถานะนักเรียนวันนี้ (ภาพรวม)</h2>
-    <canvas id="doughnutChart"></canvas>
-  </div>
-
-  <div class="chart-container" id="lineChartContainer" style="display: none;">
-    <h2>📈 แนวโน้มการมาเรียน (รายชั้น)</h2>
-    <canvas id="lineChart"></canvas>
-  </div>
   <script>
-    // *** สำคัญ: แทนที่ด้วย Web app URL ที่คุณได้จาก Google Apps Script ***
-    const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzqmJmki36Qa4njKxrVj9p66riFJJ4oyOUatisUQ68iwrx-LZj_UG3IljCLo_GIjaPm/exec'; 
-
+    // *** สำคัญ: แทนที่ด้วย Web app URL ที่คุณได้จาก Apps Script Deploy ของคุณจริงๆ ***
+    // ตัวอย่าง: const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbye52tppYF_KiMXxdj23RoDlU7bTtE5xxz_912bOxbwu-jLvJq1iuveWdslC2O1_HT3/exec';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxBoF02Gn_1ZhWTLAoJ23QRCDnhJmseEKOsvty0yLUisisx1ZmCQlkGXn1qv3VRL5cd/exec'; 
     const summaryDateInput = document.getElementById('summaryDate');
     const classSelect = document.getElementById('classSelect');
-    const loadingMessage = document.getElementById('loadingMessage');
     const errorMessage = document.getElementById('errorMessage');
-    const noDataMessage = document.getElementById('noDataMessage');
-    const summaryTable = document.getElementById('summaryTable');
-    const summaryTableBody = summaryTable.querySelector('tbody');
-    const attendanceChartContainer = document.getElementById('attendanceChartContainer');
-    const attendanceChartCanvas = document.getElementById('attendanceChart');
-    const doughnutChartContainer = document.getElementById('doughnutChartContainer');
-    const doughnutChartCanvas = document.getElementById('doughnutChart');
-    const lineChartContainer = document.getElementById('lineChartContainer');
-    const lineChartCanvas = document.getElementById('lineChart');
+    const loadingMessage = document.getElementById('loadingMessage');
 
-    let myDoughnutChart = null; // Variable for Doughnut Chart instance
-    let myLineChart = null; // Variable for Line Chart instance
+    let myLineChart;
+    let myDoughnutChart;
 
-    let myChart = null; // ตัวแปรสำหรับเก็บ instance ของ Chart.js
-
-    // ตั้งค่าวันที่เริ่มต้นเป็นวันปัจจุบัน
+    // Set today's date as default
     const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    summaryDateInput.value = `${year}-${month}-${day}`;
+    summaryDateInput.value = today.toISOString().split('T')[0];
 
     async function fetchAndDisplayDailySummary() {
       loadingMessage.style.display = 'block';
       errorMessage.style.display = 'none';
-      noDataMessage.style.display = 'none';
-      summaryTable.style.display = 'none';
-      attendanceChartContainer.style.display = 'none'; // ซ่อนกราฟก่อน
-      doughnutChartContainer.style.display = 'none'; // ซ่อน Doughnut Chart Container
-      lineChartContainer.style.display = 'none'; // ซ่อน Line Chart Container
-      summaryTableBody.innerHTML = ''; // เคลียร์ข้อมูลเก่า
-
-      // ทำลายกราฟเก่าถ้ามีอยู่
-      if (myChart) {
-        myChart.destroy();
-      }
-      if (myDoughnutChart) {
-        myDoughnutChart.destroy();
-      }
-      if (myLineChart) {
-        myLineChart.destroy();
-      }
 
       const selectedDate = summaryDateInput.value;
       const selectedClass = classSelect.value;
 
+      // ตรวจสอบว่า WEB_APP_URL ถูกตั้งค่าแล้ว
+      if (WEB_APP_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE' || !WEB_APP_URL || WEB_APP_URL.includes('YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE')) {
+          errorMessage.textContent = 'กรุณาตั้งค่า WEB_APP_URL ในไฟล์ HTML ให้ถูกต้องก่อนใช้งาน';
+          errorMessage.style.display = 'block';
+          loadingMessage.style.display = 'none';
+          return;
+      }
+
       try {
-        let url = `${API_ENDPOINT}?date=${selectedDate}`;
-        if (selectedClass !== 'All') {
-          url += `&class=${selectedClass}`;
+        const response = await fetch(`${WEB_APP_URL}?action=getDailySummary&date=${selectedDate}&class=${selectedClass}`);
+        
+        if (!response.ok) {
+            // ถ้า Response ไม่ OK (เช่น 404, 500) ให้ดึงข้อความ Error มาแสดง
+            const errorText = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}. Response: ${errorText}`);
         }
         
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        let data;
+        try {
+            // พยายามแปลง Response เป็น JSON
+            data = await response.json();
+        } catch (jsonParseError) {
+            // ถ้า JSON Parsing ล้มเหลว ให้ดึงข้อความดิบมาแสดง
+            const rawResponseText = await response.text();
+            throw new Error(`JSON parsing failed: ${jsonParseError.message}. Raw response: "${rawResponseText}"`);
         }
-        const data = await response.json(); // คาดหวัง array ของ summary objects
 
-        if (data.error) {
-            errorMessage.textContent = `ข้อผิดพลาด: ${data.error}`;
+        // กรณีที่ Apps Script ส่ง Object ที่เป็น Error กลับมา (เช่น {status: 'error', message: '...'})
+        if (data && (data.status === 'error' || data.error)) {
+            errorMessage.textContent = data.message || data.error || 'เกิดข้อผิดพลาดในการประมวลผลข้อมูลจาก Google Sheet';
             errorMessage.style.display = 'block';
+            // Clear summary cards and charts
+            document.getElementById('countPresent').textContent = '0';
+            document.getElementById('countAbsent').textContent = '0';
+            document.getElementById('countLeave').textContent = '0';
+            document.getElementById('countLate').textContent = '0';
+            if (myLineChart) myLineChart.destroy();
+            if (myDoughnutChart) myDoughnutChart.destroy();
             return;
         }
 
-        if (data.length === 0) {
-            noDataMessage.style.display = 'block';
+        // กรณีที่ข้อมูลที่ได้รับมาไม่ใช่ Array (ซึ่งเป็นรูปแบบที่เราคาดหวังสำหรับข้อมูลสรุป)
+        if (!Array.isArray(data)) {
+            errorMessage.textContent = 'รูปแบบข้อมูลที่ได้รับจาก Google Sheet ไม่ถูกต้อง (คาดหวัง Array แต่ได้ ' + typeof data + ') โปรดตรวจสอบ Apps Script';
+            errorMessage.style.display = 'block';
+            // Clear summary cards and charts
+            document.getElementById('countPresent').textContent = '0';
+            document.getElementById('countAbsent').textContent = '0';
+            document.getElementById('countLeave').textContent = '0';
+            document.getElementById('countLate').textContent = '0';
+            if (myLineChart) myLineChart.destroy();
+            if (myDoughnutChart) myDoughnutChart.destroy();
+            console.error('Received data is not an array:', data);
             return;
         }
 
-        // แสดงตารางและเพิ่มข้อมูล
-        summaryTable.style.display = 'table';
-        data.forEach(item => {
-          const row = summaryTableBody.insertRow();
-          row.insertCell().textContent = item.className;
-          row.insertCell().textContent = item.totalStudents;
-          row.insertCell().textContent = item.present;
-          row.insertCell().textContent = item.absent;
-          row.insertCell().textContent = item.leave;
-          row.insertCell().textContent = item.late;
+        // ถ้ามาถึงตรงนี้ แสดงว่า data เป็น Array ที่ถูกต้องแล้ว
+        let filteredData = data; 
+
+        // Destroy previous charts before drawing new ones
+        if (myLineChart) myLineChart.destroy();
+        if (myDoughnutChart) myDoughnutChart.destroy();
+        
+        // Calculate total counts for summary cards
+        let totalPresent = 0;
+        let totalAbsent = 0;
+        let totalLeave = 0;
+        let totalLate = 0;
+
+        filteredData.forEach(item => { 
+            totalPresent += item['มา'] || 0; // ใช้ bracket notation เพราะ key มี emoji/ช่องว่าง
+            totalAbsent += item['ขาด'] || 0;
+            totalLeave += item['ลา'] || 0;
+            totalLate += item['มาสาย'] || 0;
         });
 
-        // --- สร้างกราฟจากข้อมูลจริง (Bar Chart) ---
-        attendanceChartContainer.style.display = 'block'; // แสดง container ของกราฟ
+        // Update summary cards
+        document.getElementById('countPresent').textContent = totalPresent;
+        document.getElementById('countAbsent').textContent = totalAbsent;
+        document.getElementById('countLeave').textContent = totalLeave;
+        document.getElementById('countLate').textContent = totalLate;
 
-        const classNames = data.map(item => item.className);
-        const presentCounts = data.map(item => item.present);
-        const absentCounts = data.map(item => item.absent);
-        const leaveCounts = data.map(item => item.leave);
-        const lateCounts = data.map(item => item.late);
 
-        const chartData = {
-          labels: classNames,
-          datasets: [
-            {
-              label: 'มา',
-              data: presentCounts,
-              backgroundColor: '#4CAF50', // เขียว
-              borderColor: '#4CAF50',
-              borderWidth: 1
-            },
-            {
-              label: 'ขาด',
-              data: absentCounts,
-              backgroundColor: '#F44336', // แดง
-              borderColor: '#F44336',
-              borderWidth: 1
-            },
-            {
-              label: 'ลา',
-              data: leaveCounts,
-              backgroundColor: '#FFEB3B', // เหลือง
-              borderColor: '#FFEB3B',
-              borderWidth: 1
-            },
-            {
-              label: 'มาสาย',
-              data: lateCounts,
-              backgroundColor: '#2196F3', // น้ำเงิน
-              borderColor: '#2196F3',
-              borderWidth: 1
-            }
-          ]
+        // Prepare data for Line Chart
+        const lineChartCanvas = document.getElementById('lineChartCanvas').getContext('2d');
+        const labelsForLineChart = filteredData.map(item => item.class); 
+        const presentData = filteredData.map(item => item['มา']);
+        const absentData = filteredData.map(item => item['ขาด']);
+        const leaveData = filteredData.map(item => item['ลา']);
+        const lateData = filteredData.map(item => item['มาสาย']);
+
+        const lineChartData = {
+            labels: labelsForLineChart,
+            datasets: [
+                {
+                    label: 'มา',
+                    data: presentData,
+                    borderColor: '#4CAF50', // Green
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'ขาด',
+                    data: absentData,
+                    borderColor: '#F44336', // Red
+                    backgroundColor: 'rgba(244, 67, 54, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'ลา',
+                    data: leaveData,
+                    borderColor: '#FFEB3B', // Yellow
+                    backgroundColor: 'rgba(255, 235, 59, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'มาสาย',
+                    data: lateData,
+                    borderColor: '#2196F3', // Blue
+                    backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }
+            ]
         };
 
-        const chartOptions = {
-          responsive: true,
-          maintainAspectRatio: false, // เพื่อควบคุมความสูง
-          plugins: {
-            title: {
-              display: true,
-              text: `สรุปการเช็คชื่อวันที่ ${selectedDate} ${selectedClass === 'All' ? '(ทุกชั้น)' : `(${selectedClass})`}`
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'จำนวนนักเรียน'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'ชั้นเรียน'
-              }
-            }
-          }
-        };
-
-        myChart = new Chart(attendanceChartCanvas, {
-          type: 'bar',
-          data: chartData,
-          options: chartOptions
-        });
-
-        // --- สร้าง Doughnut Chart (สรุปสถานะรวม) ---
-        if (data.length > 0) { // Only show if there's data
-            doughnutChartContainer.style.display = 'block';
-
-            let totalPresent = 0;
-            let totalAbsent = 0;
-            let totalLeave = 0;
-            let totalLate = 0;
-
-            data.forEach(item => {
-                totalPresent += item.present;
-                totalAbsent += item.absent;
-                totalLeave += item.leave;
-                totalLate += item.late;
-            });
-
-            const doughnutData = {
-                labels: ['มา', 'ขาด', 'ลา', 'มาสาย'],
-                datasets: [{
-                    data: [totalPresent, totalAbsent, totalLeave, totalLate],
-                    backgroundColor: ['#4CAF50', '#F44336', '#FFEB3B', '#2196F3'],
-                    hoverOffset: 4
-                }]
-            };
-
-            const doughnutOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: `สรุปสถานะนักเรียนวันที่ ${selectedDate} ${selectedClass === 'All' ? '(ภาพรวมทุกชั้น)' : `(ภาพรวม ${selectedClass})`}`
+        const lineChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `แนวโน้มสถานะนักเรียนวันที่ ${selectedDate} (แยกตามชั้นเรียน)`
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(context) {
+                            return `ชั้น: ${context[0].label}`;
+                        },
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw} คน`;
+                        }
                     }
                 }
-            };
-
-            myDoughnutChart = new Chart(doughnutChartCanvas, {
-                type: 'doughnut',
-                data: doughnutData,
-                options: doughnutOptions
-            });
-        }
-
-        // --- สร้าง Line Chart (แนวโน้มการมาเรียนรายชั้น) ---
-        if (data.length > 0) {
-            lineChartContainer.style.display = 'block';
-
-            const lineChartData = {
-                labels: classNames, // Reusing classNames from the bar chart
-                datasets: [
-                    {
-                        label: 'จำนวนนักเรียนที่มา',
-                        data: presentCounts, // Reusing presentCounts
-                        borderColor: '#2196F3', // Blue color for the line
-                        backgroundColor: 'rgba(33, 150, 243, 0.2)', // Light blue fill
-                        tension: 0.1, // Smooth the line
-                        fill: true,
-                        pointBackgroundColor: '#2196F3',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#2196F3'
-                    }
-                ]
-            };
-
-            const lineChartOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
                     title: {
                         display: true,
-                        text: `แนวโน้มจำนวนนักเรียนที่มาเรียนวันที่ ${selectedDate} ${selectedClass === 'All' ? '(ทุกชั้น)' : `(${selectedClass})`}`
+                        text: 'จำนวนนักเรียน'
                     }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'จำนวนนักเรียน'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'ชั้นเรียน'
+                x: {
+                    title: {
+                        display: true,
+                        text: 'ชั้นเรียน'
+                    }
+                }
+            }
+        };
+
+        myLineChart = new Chart(lineChartCanvas, {
+            type: 'line',
+            data: lineChartData,
+            options: lineChartOptions
+        });
+
+
+        // Prepare data for Doughnut Chart (always uses total counts for selected date/class)
+        const doughnutChartCanvas = document.getElementById('doughnutChartCanvas').getContext('2d');
+        const doughnutData = {
+            labels: ['มา', 'ขาด', 'ลา', 'มาสาย'],
+            datasets: [{
+                data: [totalPresent, totalAbsent, totalLeave, totalLate], // Use total counts from filtered data
+                backgroundColor: ['#4CAF50', '#F44336', '#FFEB3B', '#2196F3'],
+                hoverOffset: 4
+            }]
+        };
+
+        const doughnutOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `สรุปสถานะนักเรียนวันที่ ${selectedDate} ${selectedClass === 'All' ? '(ภาพรวมทุกชั้น)' : `(ภาพรวม ${selectedClass})`}`
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += context.raw + ' คน';
+                            }
+                            return label;
                         }
                     }
                 }
-            };
+            }
+        };
 
-            myLineChart = new Chart(lineChartCanvas, {
-                type: 'line',
-                data: lineChartData,
-                options: lineChartOptions
-            });
-        }
+        myDoughnutChart = new Chart(doughnutChartCanvas, {
+            type: 'doughnut',
+            data: doughnutData,
+            options: doughnutOptions
+        });
 
       } catch (error) {
         console.error('Error fetching daily summary:', error);
-        errorMessage.textContent = 'ไม่สามารถดึงข้อมูลได้ โปรดตรวจสอบการเชื่อมต่อหรือข้อมูลใน Google Sheet';
+        errorMessage.textContent = 'ไม่สามารถดึงข้อมูลได้ โปรดตรวจสอบการเชื่อมต่อหรือข้อมูลใน Google Sheet: ' + error.message;
         errorMessage.style.display = 'block';
+         // Clear summary cards and charts on error
+        document.getElementById('countPresent').textContent = '0';
+        document.getElementById('countAbsent').textContent = '0';
+        document.getElementById('countLeave').textContent = '0';
+        document.getElementById('countLate').textContent = '0';
+        if (myLineChart) myLineChart.destroy();
+        if (myDoughnutChart) myDoughnutChart.destroy();
       } finally {
         loadingMessage.style.display = 'none';
       }
