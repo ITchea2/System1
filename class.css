@@ -114,13 +114,13 @@ body {
 }
 /* New style for back-button */
 .back-button {
-    background-color: var(--accent-color); /* Green color */
+    background-color: #106eb6; /* Green color */
     color: var(--light-text-color);
     border: none; /* Remove border */
 }
 
 .back-button:hover {
-    background-color: #218838; /* Darker green on hover */
+    background-color: #60b8e1; /* Darker green on hover */
     transform: translateY(-2px);
     box-shadow: 0 0.25rem 0.5rem rgba(40, 167, 69, 0.2);
 }
@@ -320,11 +320,13 @@ table td:nth-child(2) {
         font-size: 1.05em;
         margin-top: 0;
     }
-      .excel-button { /* Adjust for 768px and smaller screens */
-        padding: 10px 15px; /* Smaller padding */
-        font-size: 0.95em; /* Smaller font size */
-        justify-content: center;
-    }
+      .excel-button {
+    padding: 10px 15px;
+    font-size: 0.95em;
+    display: block;
+    margin: 0 auto; /* <-- ทำให้ปุ่มอยู่ตรงกลางแนวนอน */
+    text-align: center;
+  }
     
     table th,
     table td {
@@ -367,7 +369,10 @@ table td:nth-child(2) {
         font-size: 0.85em; /* Evden smaller font size */
         width: 150px;
         justify-content: center;
-        
+        flex-wrap: wrap;
+        display: flex;
+        text-align: center;
+        align-items: center;
     }
     .status-option {
         width: 30px; /* Even smaller for very small screens */
@@ -419,4 +424,108 @@ table td:nth-child(2) {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+/* Specific styles for the "Check All Present" button */
+.check-all-button {
+    background-color: #4CAF50; /* Green color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+   
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+.check-all-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+/* Ensure other buttons in controls-bottom also have consistent styling */
+.controls-bottom .button {
+    /* Add any common styles for all buttons in this section */
+    /* Example: */
+    margin-top: 10px; /* Space from table */
+    display: inline-block; /* Or block, depending on desired layout */
+}
+/* Styles for the Modal Overlay (the dimmed background) */
+.modal-overlay {
+    position: fixed; /* Fixes it to the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Dark, semi-transparent background */
+    display: flex; /* Use flexbox to center content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    z-index: 10000; /* Ensure it's on top of everything, higher than loadingOverlay */
+    display: none; /* Hidden by default, shown by JavaScript */
+    backdrop-filter: blur(5px); /* Optional: Adds a blur effect to the background */
+    -webkit-backdrop-filter: blur(5px); /* For Safari */
+}
+
+/* Styles for the Modal Content Box */
+.modal-content {
+    background-color: var(--card-background); /* White background */
+    padding: 30px;
+    border-radius: var(--border-radius); /* Rounded corners */
+    box-shadow: var(--box-shadow); /* Soft shadow */
+    text-align: center;
+    max-width: 400px; /* Max width for readability */
+    width: 90%; /* Responsive width */
+    transform: scale(0.9); /* Start slightly smaller for animation */
+    opacity: 0; /* Start invisible for animation */
+    animation: fadeInScale 0.3s ease-out forwards; /* Animation for appearing */
+}
+
+/* Keyframe animation for modal appearance */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Styles for the Close button inside the modal */
+.modal-close-button {
+    background-color: var(--primary-color); /* Green, consistent with primary button */
+    color: var(--light-text-color);
+    padding: 10px 25px;
+    border: none;
+    border-radius: 50px; /* Pill-shaped */
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 700;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.modal-close-button:hover {
+    background-color: #12b44a; /* Darker green on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 20px;
+        width: 95%; /* Wider on small screens */
+    }
+    .modal-content h3 {
+        font-size: 1.3em;
+    }
+    .modal-content p {
+        font-size: 0.9em;
+    }
+    .modal-close-button {
+        padding: 10px 20px;
+        font-size: 0.95em;
+    }
 }
