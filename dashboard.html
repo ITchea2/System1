@@ -72,11 +72,19 @@
     </div>
 
   </div>
-
+<div class="frequent-absentees-section">
+  <h2>⚠️ รายชื่อนักเรียนที่ขาดแถวบ่อย (เกิน 4 ครั้ง)</h2>
+  <div id="absenteesList" class="absentees-list">
+    <p class="loading-message" id="absenteesLoading">กำลังโหลดรายชื่อ...</p>
+    <p class="error-message" id="absenteesError" style="display: none;"></p>
+    <ul id="frequentAbsenteesUl"></ul>
+    <p id="noAbsenteesMessage" style="display: none; color: #555;">ยังไม่พบนักเรียนที่ขาดเรียนเกิน 4 ครั้งในช่วงนี้</p>
+  </div>
+</div>
   <script>
     // *** สำคัญ: แทนที่ด้วย Web app URL ที่คุณได้จาก Apps Script Deploy ของคุณจริงๆ ***
     // ตัวอย่าง: const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbye52tppYF_KiMXxdj23RoDlU7bTtE5xxz_912bOxbwu-jLvJq1iuveWdslC2O1_HT3/exec';
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxBoF02Gn_1ZhWTLAoJ23QRCDnhJmseEKOsvty0yLUisisx1ZmCQlkGXn1qv3VRL5cd/exec'; 
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyHxDH1s8MfpiEJSZmpx4XfhO6R7a7ISa2N3Rn3ma85XpWKRWfiCJkeO-xQg5m_qlat/exec'; 
     const summaryDateInput = document.getElementById('summaryDate');
     const classSelect = document.getElementById('classSelect');
     const errorMessage = document.getElementById('errorMessage');
@@ -332,6 +340,74 @@
 
     // โหลดข้อมูลเมื่อหน้าเว็บโหลดเสร็จครั้งแรก (สำหรับวันปัจจุบันและทุกชั้น)
     document.addEventListener('DOMContentLoaded', fetchAndDisplayDailySummary);
+    // ... (โค้ดเดิม)
+
+const absenteesListUl = document.getElementById('frequentAbsenteesUl');
+const absenteesLoading = document.getElementById('absenteesLoading');
+const absenteesError = document.getElementById('absenteesError');
+const noAbsenteesMessage = document.getElementById('noAbsenteesMessage');
+
+async function fetchAndDisplayFrequentAbsentees() {
+  absenteesLoading.style.display = 'block';
+  absenteesError.style.display = 'none';
+  noAbsenteesMessage.style.display = 'none';
+  absenteesListUl.innerHTML = ''; // Clear previous list
+
+  const selectedClass = classSelect.value;
+  // คุณอาจจะต้องเพิ่ม input สำหรับเลือกช่วงวันที่สำหรับฟังก์ชันนี้โดยเฉพาะ
+  // หรือใช้ logic กำหนดช่วงวันใน Apps Script เช่น ย้อนหลัง 30 วัน
+  const endDate = new Date().toISOString().split('T')[0]; // วันที่ปัจจุบัน
+  const startDate = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0]; // ย้อนหลัง 30 วัน
+
+  try {
+    const response = await fetch(`${WEB_APP_URL}?action=getFrequentAbsentees&startDate=${startDate}&endDate=${endDate}&class=${selectedClass}`);
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}. Response: ${errorText}`);
+    }
+    let data = await response.json();
+
+    if (data && (data.status === 'error' || data.error)) {
+        absenteesError.textContent = data.message || data.error || 'เกิดข้อผิดพลาดในการดึงรายชื่อนักเรียนที่ขาดบ่อย';
+        absenteesError.style.display = 'block';
+        return;
+    }
+
+    if (!Array.isArray(data)) {
+        absenteesError.textContent = 'รูปแบบข้อมูลรายชื่อนักเรียนที่ขาดบ่อยไม่ถูกต้อง';
+        absenteesError.style.display = 'block';
+        console.error('Received data for frequent absentees is not an array:', data);
+        return;
+    }
+
+    if (data.length === 0) {
+      noAbsenteesMessage.style.display = 'block';
+    } else {
+      data.forEach(student => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<strong>${student.name}</strong> <span class="absent-count">ขาด ${student.absentCount} ครั้ง</span>`;
+        absenteesListUl.appendChild(listItem);
+      });
+    }
+
+  } catch (error) {
+    console.error('Error fetching frequent absentees:', error);
+    absenteesError.textContent = 'ไม่สามารถดึงรายชื่อนักเรียนที่ขาดบ่อยได้: ' + error.message;
+    absenteesError.style.display = 'block';
+  } finally {
+    absenteesLoading.style.display = 'none';
+  }
+}
+
+// เรียกใช้ฟังก์ชันนี้เมื่อหน้าโหลดเสร็จ หรือเมื่อมีการเปลี่ยนวันที่/ชั้นเรียน
+// คุณอาจจะต้องตัดสินใจว่าจะให้ฟังก์ชันนี้อัปเดตตามวันที่ที่เลือกใน summaryDateInput หรือมีตัวเลือกช่วงวันที่ของตัวเอง
+// หากให้ตามวันที่ใน summaryDateInput, logic ใน Apps Script ต้องปรับเป็นการนับการขาดตลอดทั้งเทอม/ช่วงที่ต้องการ (ไม่ใช่แค่รายวัน)
+
+// สำหรับตอนนี้ สมมติว่าเรียกเมื่อหน้าโหลดและเมื่อเปลี่ยน class
+document.addEventListener('DOMContentLoaded', fetchAndDisplayFrequentAbsentees);
+classSelect.addEventListener('change', fetchAndDisplayFrequentAbsentees);
+// ถ้าต้องการให้วันที่ใน summaryDateInput มีผลต่อ frequent absentees:
+// summaryDateInput.addEventListener('change', fetchAndDisplayFrequentAbsentees);
   </script>
 </body>
 </html>
