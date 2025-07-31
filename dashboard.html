@@ -41,7 +41,6 @@
     <div id="errorMessage" class="error-message" style="display: none;"></div>
     <div id="loadingMessage" class="loading-message">กำลังโหลดข้อมูล...</div>
 
-    <!-- New Summary Cards Section -->
     <div class="summary-cards">
         <div class="summary-card status-present">
             <h3>มา</h3>
@@ -61,15 +60,11 @@
         </div>
     </div>
 
-    <!-- Chart Section -->
     <div class="chart-section">
         <div class="chart-card">
             <canvas id="doughnutChartCanvas"></canvas>
         </div>
-        <div class="chart-card">
-            <canvas id="lineChartCanvas"></canvas>
         </div>
-    </div>
 
   </div>
 <div class="frequent-absentees-section">
@@ -90,8 +85,7 @@
     const errorMessage = document.getElementById('errorMessage');
     const loadingMessage = document.getElementById('loadingMessage');
 
-    let myLineChart;
-    let myDoughnutChart;
+    let myDoughnutChart; // myLineChart is removed
 
     // Set today's date as default
     const today = new Date();
@@ -140,7 +134,6 @@
             document.getElementById('countAbsent').textContent = '0';
             document.getElementById('countLeave').textContent = '0';
             document.getElementById('countLate').textContent = '0';
-            if (myLineChart) myLineChart.destroy();
             if (myDoughnutChart) myDoughnutChart.destroy();
             return;
         }
@@ -154,7 +147,6 @@
             document.getElementById('countAbsent').textContent = '0';
             document.getElementById('countLeave').textContent = '0';
             document.getElementById('countLate').textContent = '0';
-            if (myLineChart) myLineChart.destroy();
             if (myDoughnutChart) myDoughnutChart.destroy();
             console.error('Received data is not an array:', data);
             return;
@@ -164,7 +156,6 @@
         let filteredData = data; 
 
         // Destroy previous charts before drawing new ones
-        if (myLineChart) myLineChart.destroy();
         if (myDoughnutChart) myDoughnutChart.destroy();
         
         // Calculate total counts for summary cards
@@ -185,96 +176,6 @@
         document.getElementById('countAbsent').textContent = totalAbsent;
         document.getElementById('countLeave').textContent = totalLeave;
         document.getElementById('countLate').textContent = totalLate;
-
-
-        // Prepare data for Line Chart
-        const lineChartCanvas = document.getElementById('lineChartCanvas').getContext('2d');
-        const labelsForLineChart = filteredData.map(item => item.class); 
-        const presentData = filteredData.map(item => item['มา']);
-        const absentData = filteredData.map(item => item['ขาด']);
-        const leaveData = filteredData.map(item => item['ลา']);
-        const lateData = filteredData.map(item => item['มาสาย']);
-
-        const lineChartData = {
-            labels: labelsForLineChart,
-            datasets: [
-                {
-                    label: 'มา',
-                    data: presentData,
-                    borderColor: '#4CAF50', // Green
-                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
-                    fill: true,
-                    tension: 0.3
-                },
-                {
-                    label: 'ขาด',
-                    data: absentData,
-                    borderColor: '#F44336', // Red
-                    backgroundColor: 'rgba(244, 67, 54, 0.2)',
-                    fill: true,
-                    tension: 0.3
-                },
-                {
-                    label: 'ลา',
-                    data: leaveData,
-                    borderColor: '#FFEB3B', // Yellow
-                    backgroundColor: 'rgba(255, 235, 59, 0.2)',
-                    fill: true,
-                    tension: 0.3
-                },
-                {
-                    label: 'มาสาย',
-                    data: lateData,
-                    borderColor: '#2196F3', // Blue
-                    backgroundColor: 'rgba(33, 150, 243, 0.2)',
-                    fill: true,
-                    tension: 0.3
-                }
-            ]
-        };
-
-        const lineChartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: `แนวโน้มสถานะนักเรียนวันที่ ${selectedDate} (แยกตามชั้นเรียน)`
-                },
-                tooltip: {
-                    callbacks: {
-                        title: function(context) {
-                            return `ชั้น: ${context[0].label}`;
-                        },
-                        label: function(context) {
-                            return `${context.dataset.label}: ${context.raw} คน`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'จำนวนนักเรียน'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'ชั้นเรียน'
-                    }
-                }
-            }
-        };
-
-        myLineChart = new Chart(lineChartCanvas, {
-            type: 'line',
-            data: lineChartData,
-            options: lineChartOptions
-        });
-
 
         // Prepare data for Doughnut Chart (always uses total counts for selected date/class)
         const doughnutChartCanvas = document.getElementById('doughnutChartCanvas').getContext('2d');
@@ -327,7 +228,6 @@
         document.getElementById('countAbsent').textContent = '0';
         document.getElementById('countLeave').textContent = '0';
         document.getElementById('countLate').textContent = '0';
-        if (myLineChart) myLineChart.destroy();
         if (myDoughnutChart) myDoughnutChart.destroy();
       } finally {
         loadingMessage.style.display = 'none';
